@@ -1,0 +1,274 @@
+import {View, Pressable, Text, StyleSheet, Image, FlatList, ImageBackground } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient';
+import { useLayoutEffect, useContext, useState, useEffect } from 'react'
+
+import Colors from '../utilities/constants/colors';
+import ScreenTemplate from './ScreenTemplate'
+import Header from '../components/ui/Header'
+import { PLAYERS } from '../data/PlayersData'
+import { TEAMS } from '../data/TeamsData'
+import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
+import WesternIcon from '../assets/images/nhl-western-conference.svg';
+import IconButton from '../components/ui/IconButton'
+import { ApplicationContext } from '../store/context/application-context';
+
+
+const PlayerStatsScreen = ({route, navigation}) => {
+  const playerId = route.params.playerId
+  const navTitle = route.name
+  const context = useContext(ApplicationContext);
+  const [ favOrNot , setFavOrNot ] = useState('')
+  const [ visitedOrNot, setVisitedOrNot ] = useState('')
+  let favouriteListFromContext = context.favouriteList
+  let visitedPlayersFromContext = context.vistedList
+
+  const findTeamImage = (playerTeamName) => {
+    return TEAMS.find(team => team.name === playerTeamName).image
+  }
+
+  const selectedPlayer = PLAYERS.find(player => {
+    let sumPoints;
+    if (player.id === playerId) {
+      let teamImage = findTeamImage(player.team)
+      player.image = teamImage
+      sumPoints = player.assists + player.goals
+      player.points = sumPoints;
+      return player
+    }
+  })
+
+  const onFavouritePressedHandler = () => {
+    setFavOrNot(true)
+    context.add(selectedPlayer.id);
+    console.log('Lagt till din favorit till favoriter...');
+  };
+
+  useEffect(() => {
+    let alrearyFavourite = favouriteListFromContext.some(favId => favId === selectedPlayer.id )
+
+    setFavOrNot(alrearyFavourite)
+
+    let alreadyVisited = visitedPlayersFromContext.some(favId => favId === selectedPlayer.id )
+
+    if (!alreadyVisited) {
+      console.log('klart')
+      context.addV(selectedPlayer.id)
+    }
+
+  }, [visitedPlayersFromContext])
+
+  useLayoutEffect(() => {
+    /* navigation.setOptions({title: navTitle}) */
+    navigation.setOptions({
+      headerRight: () => {
+        return favOrNot ? null : <IconButton onPressed={onFavouritePressedHandler} />;
+      },
+      title: navTitle
+    });
+  },[navigation, navTitle, favOrNot])
+
+  /* console.log(playerId, selectedPlayer) */
+
+/*   const onSelectedPlayerHandler = (playerId) => {
+    navigation.navigate('PlayerStats', { id: playerId });
+} */
+
+  const renderPlayers = (playerItem) => {
+    return <View>
+
+        <Text style={styles.titleText}>{playerItem.item.name}</Text>
+
+    </View>
+  }
+
+  return (
+    <ScreenTemplate>
+      <View style={styles.screen}>
+        <View style={styles.headerContainer}>
+
+          <ImageBackground
+                    source={require('../assets/images/players/peter-forsberg.jpeg')}
+                    resizeMode= 'cover'
+                    style={styles.screen}
+                    imageStyle={styles.backgroundImage}
+          >
+            <LinearGradient
+              style={styles.screen}
+              colors={Colors.gradientPlayer}
+            >
+              <View style={styles.headerContent}>
+                <View>
+                  <View style={styles.titleNameContainer}>
+                    <Text style={styles.titleText}>{selectedPlayer.name}</Text>
+                  </View>
+                  <Image style={styles.teamImage} source={selectedPlayer.image}/>
+                </View>
+                <View style={styles.shirtAndPositionContainer}>
+                  <Text style={styles.shirtText}>#21</Text>
+                  <Text style={styles.shirtText}>C</Text>
+                </View>
+
+              </View>
+
+
+            </LinearGradient>
+          </ImageBackground>
+
+
+        </View>
+        <View style={styles.floatContainer}>
+          <View style={styles.floatItem}>
+            <Text style={styles.floatItemHeader}>Games</Text>
+            <Text style={styles.floatitemStats} >{selectedPlayer.games}</Text>
+          </View>
+          <View style={styles.floatItem}>
+            <Text style={styles.floatItemHeader}>Goals</Text>
+            <Text style={styles.floatitemStats} >{selectedPlayer.goals}</Text>
+          </View>
+          <View style={styles.floatItem}>
+            <Text style={styles.floatItemHeader}>Assists</Text>
+            <Text style={styles.floatitemStats} >{selectedPlayer.assists}</Text>
+          </View>
+        </View>
+        <ImageBackground
+                    source={require('../assets/images/pointsbg.jpg')}
+                    resizeMode= 'cover'
+                    style={styles.pointsContainer}
+                    imageStyle={styles.backgroundImagePoints}
+          >
+        <View >
+
+          <Text style={{color: Colors.lime, textAlign: 'center'}}>TOTAL POINTS</Text>
+          <Text style={styles.pointsText}>{selectedPlayer.points}</Text>
+
+        </View>
+        </ImageBackground>
+
+
+
+{/*         <FlatList
+          data={selectedPlayer}
+          keyExtractor={(item) => item.id}
+          renderItem={renderPlayers}
+        /> */}
+      </View>
+    </ScreenTemplate>
+  )
+}
+
+export default PlayerStatsScreen
+
+const styles = StyleSheet.create({
+
+
+  shirtAndPositionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
+  titleNameContainer: {
+    backgroundColor: 'rgba(41, 38, 61, 0.7)',
+    padding: 10,
+   /*  borderBottomWidth: 0, */
+    // borderWidth: 5,
+    borderColor: Colors.lime,
+    alignSelf: 'flex-start',
+    borderRadius: 0,
+  },
+
+  screen: {
+    flex: 1,
+  },
+  headerContainer: {
+    height: 350
+  },
+  headerContent: {
+    flex: 1,
+    padding: 10,
+    paddingBottom: 50,
+    justifyContent: 'space-between',
+
+
+  },
+  backgroundImage: {
+    opacity: 0.5,
+  },
+  backgroundImagePoints: {
+    opacity: 0.4,
+  },
+  teamImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+
+  },
+  floatContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: -40,
+/*     backgroundColor: 'green', */
+  },
+  floatItem: {
+    justifyContent: 'space-between',
+    backgroundColor: Colors.lime,
+    width: 100,
+    height: 80,
+    borderRadius: 0,
+  },
+  floatItemHeader: {
+    textAlign: 'left',
+    padding: 5,
+  },
+  floatitemStats: {
+    textAlign: 'right',
+    padding: 5,
+    fontWeight: 'bold',
+    fontSize: 25
+  },
+
+  pointsContainer: {
+    flex: 1,
+    borderWidth: 6,
+    borderBottomEndRadius: 20,
+
+    borderBottomLeftRadius: 20,
+    borderColor: Colors.lime,
+    margin: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(41, 38, 61, 0.6)',
+  },
+
+  pointsText: {
+    color: Colors.lightText,
+    fontSize: 140,
+    fontWeight: 'bold'
+  },
+
+
+  mainContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    /* backgroundColor: 'green' */
+  },
+  titleText: {
+    color: Colors.lime,
+    fontSize: 35,
+    fontWeight: 'bold',
+
+
+    /* padding: 10, */
+  },
+  shirtText: {
+    color: Colors.lightText,
+    fontSize: 60,
+    fontWeight: 'bold',
+    /* padding: 10, */
+  },
+  statsText: {
+    color: Colors.lightText,
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+})
