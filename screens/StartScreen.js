@@ -7,37 +7,41 @@ import Header from '../components/ui/Header'
 import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
 import WesternIcon from '../assets/images/nhl-western-conference.svg';
 
-
-
 const StartScreen = ({route, navigation}) => {
 
   const handleConferenceClick = (teams, selectedConference) => {
     navigation.navigate(teams , {conference: selectedConference})
   }
+
   return (
     <ScreenTemplate>
       <View style={styles.screen}>
           <Header>Start</Header>
-
-
           <View style={styles.mainContent}>
             <Pressable onPress={() => handleConferenceClick('Teams', 'Eastern')}>
-              <EasternIcon
+              <Image
+                source={require('../assets/images/eastern.png')}
+                style={styles.imageContainerWest}
+              />
+{/*               <EasternIcon
                   style={styles.imageContainerEast}
                   width={200}
                   height={200}
-              />
+              /> */}
             </Pressable>
 
             <Pressable onPress={() => handleConferenceClick('Teams', 'Western')}>
-              <WesternIcon
+              <Image
+                  source={require('../assets/images/western.png')}
+                  style={styles.imageContainerWest}
+                />
+{/*               <WesternIcon
                 style={styles.imageContainerWest}
                 width={200}
                 height={200}
-              />
+              /> */}
             </Pressable>
           </View>
-
       </View>
     </ScreenTemplate>
   )
@@ -52,7 +56,7 @@ const styles = StyleSheet.create({
   mainContent: {
     flex: 1,
     /* justifyContent: 'center', */
-    marginTop: '25%',
+    marginTop: '15%',
     alignItems: 'center',
     /* backgroundColor: 'green' */
   },
@@ -67,8 +71,10 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   imageContainerWest: {
-    borderWidth: 4,
-    borderColor: Colors.westBlue,
-    marginVertical: 10,
+    width: 190,
+    height: 140,
+/*     borderWidth: 4,
+    borderColor: Colors.westBlue, */
+    marginVertical: 30,
   },
 })

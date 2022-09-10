@@ -44,7 +44,7 @@ const TabNavigator = () => {
           /* headerTintColor: '#99d0f6', */
           drawerLabel: 'Home',
           drawerIcon: (color, size) => (
-            <Ionicons name='home' size={20} color={Colors.lime} />
+            <Ionicons name='stats-chart' size={20} color={Colors.lime} />
           ),
         }}
       />
@@ -57,7 +57,7 @@ const TabNavigator = () => {
           /* headerTintColor: '#99d0f6', */
           drawerLabel: 'Favourites',
           drawerIcon: (color, size) => (
-            <Ionicons name='home' size={20} color={Colors.lime} />
+            <Ionicons name='star' size={20} color={Colors.lime} />
           ),
         }}
       />
@@ -69,7 +69,7 @@ const TabNavigator = () => {
           /* headerTintColor: '#99d0f6', */
           drawerLabel: 'Visited',
           drawerIcon: (color, size) => (
-            <Ionicons name='home' size={20} color={Colors.lime} />
+            <Ionicons name='checkmark' size={20} color={Colors.lime} />
           ),
         }}
       />
@@ -81,7 +81,7 @@ const TabNavigator = () => {
           /* headerTintColor: '#99d0f6', */
           drawerLabel: 'Settings',
           drawerIcon: (color, size) => (
-            <Ionicons name='home' size={20} color={Colors.lime} />
+            <Ionicons name='settings' size={20} color={Colors.lime} />
           ),
         }}
       />

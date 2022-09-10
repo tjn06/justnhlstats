@@ -7,7 +7,6 @@ const ScreenTemplate = ({children}) => {
         <LinearGradient
             style={styles.screen}
             colors={Colors.gradient}
-
         >
 {/*             <ImageBackground
                  source={require('../assets/images/icebg.jpg')}

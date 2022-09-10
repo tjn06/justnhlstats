@@ -1,17 +1,13 @@
 import {View, Pressable, Text, StyleSheet, Image, FlatList, ImageBackground } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLayoutEffect, useContext, useState, useEffect } from 'react'
+import { ApplicationContext } from '../store/context/application-context';
+import IconButton from '../components/ui/IconButton'
 
 import Colors from '../utilities/constants/colors';
 import ScreenTemplate from './ScreenTemplate'
-import Header from '../components/ui/Header'
 import { PLAYERS } from '../data/PlayersData'
 import { TEAMS } from '../data/TeamsData'
-import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
-import WesternIcon from '../assets/images/nhl-western-conference.svg';
-import IconButton from '../components/ui/IconButton'
-import { ApplicationContext } from '../store/context/application-context';
-
 
 const PlayerStatsScreen = ({route, navigation}) => {
   const playerId = route.params.playerId
@@ -30,7 +26,7 @@ const PlayerStatsScreen = ({route, navigation}) => {
     let sumPoints;
     if (player.id === playerId) {
       let teamImage = findTeamImage(player.team)
-      player.image = teamImage
+      player.teamImage = teamImage
       sumPoints = player.assists + player.goals
       player.points = sumPoints;
       return player
@@ -40,25 +36,19 @@ const PlayerStatsScreen = ({route, navigation}) => {
   const onFavouritePressedHandler = () => {
     setFavOrNot(true)
     context.add(selectedPlayer.id);
-    console.log('Lagt till din favorit till favoriter...');
   };
 
   useEffect(() => {
     let alrearyFavourite = favouriteListFromContext.some(favId => favId === selectedPlayer.id )
-
     setFavOrNot(alrearyFavourite)
 
     let alreadyVisited = visitedPlayersFromContext.some(favId => favId === selectedPlayer.id )
-
     if (!alreadyVisited) {
-      console.log('klart')
       context.addV(selectedPlayer.id)
     }
-
   }, [visitedPlayersFromContext])
 
   useLayoutEffect(() => {
-    /* navigation.setOptions({title: navTitle}) */
     navigation.setOptions({
       headerRight: () => {
         return favOrNot ? null : <IconButton onPressed={onFavouritePressedHandler} />;
@@ -67,30 +57,15 @@ const PlayerStatsScreen = ({route, navigation}) => {
     });
   },[navigation, navTitle, favOrNot])
 
-  /* console.log(playerId, selectedPlayer) */
-
-/*   const onSelectedPlayerHandler = (playerId) => {
-    navigation.navigate('PlayerStats', { id: playerId });
-} */
-
-  const renderPlayers = (playerItem) => {
-    return <View>
-
-        <Text style={styles.titleText}>{playerItem.item.name}</Text>
-
-    </View>
-  }
-
   return (
     <ScreenTemplate>
       <View style={styles.screen}>
         <View style={styles.headerContainer}>
-
           <ImageBackground
-                    source={require('../assets/images/players/peter-forsberg.jpeg')}
-                    resizeMode= 'cover'
-                    style={styles.screen}
-                    imageStyle={styles.backgroundImage}
+            source={selectedPlayer.image}
+            resizeMode= 'cover'
+            style={styles.screen}
+            imageStyle={styles.backgroundImage}
           >
             <LinearGradient
               style={styles.screen}
@@ -101,20 +76,15 @@ const PlayerStatsScreen = ({route, navigation}) => {
                   <View style={styles.titleNameContainer}>
                     <Text style={styles.titleText}>{selectedPlayer.name}</Text>
                   </View>
-                  <Image style={styles.teamImage} source={selectedPlayer.image}/>
+                  <Image style={styles.teamImage} source={selectedPlayer.teamImage}/>
                 </View>
                 <View style={styles.shirtAndPositionContainer}>
-                  <Text style={styles.shirtText}>#21</Text>
-                  <Text style={styles.shirtText}>C</Text>
+                  <Text style={styles.shirtText}>#{selectedPlayer.nr}</Text>
+                  <Text style={styles.shirtText}>{selectedPlayer.position}</Text>
                 </View>
-
               </View>
-
-
             </LinearGradient>
           </ImageBackground>
-
-
         </View>
         <View style={styles.floatContainer}>
           <View style={styles.floatItem}>
@@ -131,26 +101,16 @@ const PlayerStatsScreen = ({route, navigation}) => {
           </View>
         </View>
         <ImageBackground
-                    source={require('../assets/images/pointsbg.jpg')}
-                    resizeMode= 'cover'
-                    style={styles.pointsContainer}
-                    imageStyle={styles.backgroundImagePoints}
+            source={require('../assets/images/pointsbg.jpg')}
+            resizeMode= 'cover'
+            style={styles.pointsContainer}
+            imageStyle={styles.backgroundImagePoints}
           >
-        <View >
-
+        <View>
           <Text style={{color: Colors.lime, textAlign: 'center'}}>TOTAL POINTS</Text>
           <Text style={styles.pointsText}>{selectedPlayer.points}</Text>
-
         </View>
         </ImageBackground>
-
-
-
-{/*         <FlatList
-          data={selectedPlayer}
-          keyExtractor={(item) => item.id}
-          renderItem={renderPlayers}
-        /> */}
       </View>
     </ScreenTemplate>
   )
@@ -159,15 +119,12 @@ const PlayerStatsScreen = ({route, navigation}) => {
 export default PlayerStatsScreen
 
 const styles = StyleSheet.create({
-
-
   shirtAndPositionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
-
   titleNameContainer: {
-    backgroundColor: 'rgba(41, 38, 61, 0.7)',
+    backgroundColor: 'rgba(41, 38, 61, 0.6)',
     padding: 10,
    /*  borderBottomWidth: 0, */
     // borderWidth: 5,
@@ -175,7 +132,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     borderRadius: 0,
   },
-
   screen: {
     flex: 1,
   },
@@ -187,8 +143,6 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingBottom: 50,
     justifyContent: 'space-between',
-
-
   },
   backgroundImage: {
     opacity: 0.5,
@@ -200,7 +154,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     resizeMode: 'contain',
-
   },
   floatContainer: {
     flexDirection: 'row',
@@ -225,12 +178,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25
   },
-
   pointsContainer: {
     flex: 1,
     borderWidth: 6,
     borderBottomEndRadius: 20,
-
     borderBottomLeftRadius: 20,
     borderColor: Colors.lime,
     margin: 20,
@@ -238,14 +189,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(41, 38, 61, 0.6)',
   },
-
   pointsText: {
     color: Colors.lightText,
     fontSize: 140,
     fontWeight: 'bold'
   },
-
-
   mainContent: {
     flex: 1,
     justifyContent: 'center',
@@ -256,8 +204,6 @@ const styles = StyleSheet.create({
     color: Colors.lime,
     fontSize: 35,
     fontWeight: 'bold',
-
-
     /* padding: 10, */
   },
   shirtText: {

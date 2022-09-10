@@ -18,46 +18,40 @@ const TeamsScreen = ({route, navigation}) => {
     return team.conference === conference
   })
 
-  useLayoutEffect(() => {
-    navigation.setOptions({title: navTitle})
-  },[navigation, conference])
-
-
   const onSelectedTeamHandler = (teamId, teamName) => {
     navigation.navigate('Players', { teamId: teamId, teamName: teamName });
   }
 
+  useLayoutEffect(() => {
+    navigation.setOptions({title: navTitle})
+  },[navigation, conference])
+
   const RenderTeam = ({teamItem ,index}) => {
-    return <>
-    <View style={styles.spaceMarginItem}>
-      <Pressable
-      onPress={() => onSelectedTeamHandler(teamItem.id, teamItem.name)}>
-        <View
-        style={[styles.teamItem,
-        {borderTopWidth: index === 0 ? 4 : 0},
-        {borderTopColor: index === 0 ? Colors.lime : Colors.lime},
-        {borderBottomWidth: index === selectedTeams.length - 1 ? 4 : 2},
-        {borderBottomColor: index === selectedTeams.length - 1 ? Colors.lime : Colors.darkGray}]}>
-          <Text style={styles.teamsText}>{teamItem.name} </Text>
-          <Image
-            style={styles.teamImage}
-            source={teamItem.image}
-          />
-        </View>
-      </Pressable>
+    return (
+      <View style={styles.spaceMarginItem}>
+        <Pressable onPress={() => onSelectedTeamHandler(teamItem.id, teamItem.name)}>
+          <View
+            style={[styles.teamItem,
+            {borderTopWidth: index === 0 ? 4 : 0},
+            {borderTopColor: index === 0 ? Colors.lime : Colors.lime},
+            {borderBottomWidth: index === selectedTeams.length - 1 ? 4 : 2},
+            {borderBottomColor: index === selectedTeams.length - 1 ? Colors.lime : Colors.darkGray}]}
+          >
+            <Text style={styles.teamsText}>{teamItem.name} </Text>
+            <Image
+              style={styles.teamImage}
+              source={teamItem.image}
+            />
+          </View>
+        </Pressable>
       </View>
-    </>
+    )
   }
 
   return (
     <ScreenTemplate>
       <View style={styles.screen}>
         <Text style={styles.titleText}>{conferenceTitle}</Text>
-{/*         <FlatList
-          data={selectedTeams}
-          keyExtractor={(item) => item.id}
-          renderItem={renderTeam}
-        /> */}
          <FlatList
             data={selectedTeams}
             keyExtractor={(item) => item.id}
@@ -67,8 +61,8 @@ const TeamsScreen = ({route, navigation}) => {
               return (
                 <RenderTeam teamItem={item} index={index} />
               );
-          }}
-/>
+            }}
+          />
       </View>
     </ScreenTemplate>
   )

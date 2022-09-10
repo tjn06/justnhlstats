@@ -1,24 +1,15 @@
 import {View, Pressable,Image, Text, StyleSheet } from 'react-native'
 import Colors from '../utilities/constants/colors';
-
 import ScreenTemplate from './ScreenTemplate'
-import Header from '../components/ui/Header'
-
-import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
-import WesternIcon from '../assets/images/nhl-western-conference.svg';
-
-
+import { Ionicons } from '@expo/vector-icons';
 
 const SettingsScreen = ({route, navigation}) => {
-
-  const handleConferenceClick = (teams, selectedConference) => {
-    navigation.navigate(teams , {conference: selectedConference})
-  }
   return (
     <ScreenTemplate>
-      <View style={styles.screen}>
-          <Text>Settings</Text>
-
+      <View style={styles.headerContainer}>
+        <Text style={[styles.headerText, {color: Colors.lime}]}>SETTINGS</Text>
+        <Text style={styles.text}>NO SETTINGS YET</Text>
+        <Ionicons name='settings' size={300} color={Colors.gray} />
       </View>
     </ScreenTemplate>
   )
@@ -30,26 +21,20 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-  mainContent: {
-    flex: 1,
-    /* justifyContent: 'center', */
-    marginTop: '25%',
-    alignItems: 'center',
-    /* backgroundColor: 'green' */
+  headerContainer: {
+    marginTop: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  titleText: {
-    color: Colors.secondaryText,
-    fontSize: 35,
+  headerText: {
+    color: Colors.lime.headerTextColor,
     fontWeight: 'bold',
+    fontSize: 40,
   },
-  imageContainerEast: {
-    borderWidth: 4,
-    borderColor: Colors.eastRed,
-    marginVertical: 10,
-  },
-  imageContainerWest: {
-    borderWidth: 4,
-    borderColor: Colors.westBlue,
-    marginVertical: 10,
-  },
+  text: {
+    textAlign: 'center',
+    color: Colors.gray,
+    fontSize: 23,
+    marginBottom: '20%'
+  }
 })

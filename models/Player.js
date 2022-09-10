@@ -1,5 +1,5 @@
 class Player {
-  constructor(id, name, team, games, goals, assists, image) {
+  constructor(id, name, team, games, goals, assists, image, nr, position) {
     this.id = id;
     this.name = name;
     this.team = team;
@@ -7,6 +7,8 @@ class Player {
     this.goals = goals;
     this.assists = assists
     this.image = image;
+    this.nr = nr;
+    this.position = position
   }
 }
 
