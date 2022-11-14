@@ -1,8 +1,9 @@
 import {View, Pressable, Text, Image, StyleSheet, FlatList } from 'react-native'
 
-import { useLayoutEffect } from 'react'
-
+import { useEffect, useLayoutEffect, useContext, useState } from 'react'
+import { ApplicationContext } from '../store/context/application-context';
 import Colors from '../utilities/constants/colors';
+import availibleImages from '../utilities/constants/availableImages';
 import ScreenTemplate from './ScreenTemplate'
 import Header from '../components/ui/Header'
 import { TEAMS } from '../data/TeamsData'
@@ -10,21 +11,42 @@ import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
 import WesternIcon from '../assets/images/nhl-western-conference.svg';
 
 const TeamsScreen = ({route, navigation}) => {
+  const context = useContext(ApplicationContext)
+
+  const [conferenceTeams, setConferenceTeams] = useState(null)
+
   const conference = route.params.conference
   const conferenceTitle = route.params.conference + ' conference'
   const navTitle = route.name
 
-  const selectedTeams = TEAMS.filter((team) => {
-    return team.conference === conference
-  })
+  console.log("context.teamsList", context.teamsList)
+  const selectedTeams = context.teamsList.filter((team) => {
+    console.log("theTeam", team)
+    return team.conference.name === conference
+  }).map( team => ({...team, image : team.teamName.toLowerCase().replaceAll(' ','')}) )
 
   const onSelectedTeamHandler = (teamId, teamName) => {
     navigation.navigate('Players', { teamId: teamId, teamName: teamName });
   }
 
+/*   useEffect(() => {
+    (async () => {
+      context.favouriteList.filter()
+    })();
+  },[]) */
+  const checkIfImageExists = (image) => {
+    const imageObj = availibleImages.find( item => item.name === image )
+    if(imageObj){
+      console.log("theimage", imageObj)
+      return imageObj.path
+    }
+    return require(`../assets/images/teams/mapleleafs.png`)
+  }
+
   useLayoutEffect(() => {
     navigation.setOptions({title: navTitle})
   },[navigation, conference])
+
 
   const RenderTeam = ({teamItem ,index}) => {
     return (
@@ -40,7 +62,8 @@ const TeamsScreen = ({route, navigation}) => {
             <Text style={styles.teamsText}>{teamItem.name} </Text>
             <Image
               style={styles.teamImage}
-              source={teamItem.image}
+              // source={teamItem.image}
+              source={checkIfImageExists(teamItem.image)}
             />
           </View>
         </Pressable>
