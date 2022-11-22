@@ -2,7 +2,6 @@ import {View, Pressable, Image, Text, StyleSheet, FlatList } from 'react-native'
 import { useEffect, useContext, useState } from 'react'
 import { ApplicationContext } from '../store/context/application-context';
 import { Ionicons } from '@expo/vector-icons'
-
 import Colors from '../utilities/constants/colors';
 import ScreenTemplate from './ScreenTemplate'
 import { PLAYERS } from '../data/PlayersData'
@@ -11,7 +10,6 @@ const VisitedPlayersScreen = ({route, navigation}) => {
   const context = useContext(ApplicationContext);
   const visitedPlayerIds = context.vistedList
   const [visitedPlayers, setVisitedPlayers] = useState([])
-
 
   const getPlayers = () => {
     let players = [];

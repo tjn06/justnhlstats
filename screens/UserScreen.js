@@ -2,23 +2,23 @@ import {View, Pressable,Image, Text, StyleSheet, useWindowDimensions, Platform }
 import Colors from '../utilities/constants/colors';
 import ScreenTemplate from './ScreenTemplate'
 import { Ionicons } from '@expo/vector-icons';
+import CameraComponent from '../components/CameraComponent';
 
-const SettingsScreen = ({route, navigation}) => {
+const UserScreen = ({route, navigation}) => {
   const { styles } = dynamicStyles()
-  const { width, height } = useWindowDimensions();
 
   return (
     <ScreenTemplate>
       <View style={styles.mainContainer}>
-        <Text style={[styles.headerText, {color: Colors.lime}]}>SETTINGS</Text>
-        <Text style={styles.subHeadertext}>NO SETTINGS YET</Text>
-        <Ionicons name='settings' size={height < width ? 100 : 200} color={Colors.gray} />
+        <Text style={[styles.headerText, {color: Colors.lime}]}>PROFILE</Text>
+        <Text style={styles.subHeadertext}>ADD IMAGE PROFILE</Text>
+        <CameraComponent />
       </View>
     </ScreenTemplate>
   )
 }
 
-export default SettingsScreen
+export default UserScreen
 
 const dynamicStyles = () => {
   const { width, height } = useWindowDimensions();
@@ -41,7 +41,7 @@ const dynamicStyles = () => {
       textAlign: 'center',
       color: Colors.gray,
       fontSize: Platform.select({ ios: 23, android: 18 }),
-      marginBottom: height * 0.1,
+      marginBottom: height < width ? 10 : height * 0.1,
     }
   })
   return { styles }

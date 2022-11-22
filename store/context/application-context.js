@@ -5,27 +5,23 @@ export const ApplicationContext = createContext({
   visited: [],
   teams: [],
   addTeams: (allTeams) => {},
-
   addFavourite: (id) => {},
   removeFavourite: (id) => {},
-
   addVisited: (id) => {},
   removeVisited: (id) => {},
 });
 
 const ApplicationContextProvider = ({ children }) => {
   const [teams, setTeams] = useState([])
-
   const [favourites, setFavourites] = useState([]);
   const [visited, setVisited] = useState([]);
-
 
   function addTeams(allTeams) {
     setTeams(allTeams)
   }
 
   function addVisited(id) {
-    console.log("tillagd visited")
+    // console.log("tillagd visited")
       setVisited((currentItems) => [...currentItems, id]);
   }
 
@@ -49,15 +45,11 @@ const ApplicationContextProvider = ({ children }) => {
     teamsList: teams,
     favouriteList: favourites,
     vistedList: visited,
-
     addT : addTeams,
-
     add: addFavourite,
     remove: removeFavourite,
-
     addV : addVisited,
     removeV : removeVisited,
-
   };
 
   return (

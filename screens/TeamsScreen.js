@@ -5,25 +5,23 @@ import { ApplicationContext } from '../store/context/application-context';
 import Colors from '../utilities/constants/colors';
 import availibleImages from '../utilities/constants/availableImages';
 import ScreenTemplate from './ScreenTemplate'
-import Header from '../components/ui/Header'
-import { TEAMS } from '../data/TeamsData'
-import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
-import WesternIcon from '../assets/images/nhl-western-conference.svg';
+// import Header from '../components/ui/Header'
+// import { TEAMS } from '../data/TeamsData'
+// import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
+// import WesternIcon from '../assets/images/nhl-western-conference.svg';
 
 const TeamsScreen = ({route, navigation}) => {
   const context = useContext(ApplicationContext)
-
   const [conferenceTeams, setConferenceTeams] = useState(null)
-
   const conference = route.params.conference
   const conferenceTitle = route.params.conference + ' conference'
   const navTitle = route.name
 
-  console.log("context.teamsList", context.teamsList)
+  // console.log("context.teamsList", context.teamsList)
   const selectedTeams = context.teamsList.filter((team) => {
-    console.log("theTeam", team)
     return team.conference.name === conference
-  }).map( team => ({...team, image : team.teamName.toLowerCase().replaceAll(' ','')}) )
+  }).map( team => ({...team, image : team.teamName.toLowerCase().replace(/\s/g,'')}) )
+
 
   const onSelectedTeamHandler = (teamId, teamName) => {
     navigation.navigate('Players', { teamId: teamId, teamName: teamName });
@@ -34,13 +32,13 @@ const TeamsScreen = ({route, navigation}) => {
       context.favouriteList.filter()
     })();
   },[]) */
+
   const checkIfImageExists = (image) => {
     const imageObj = availibleImages.find( item => item.name === image )
     if(imageObj){
-      console.log("theimage", imageObj)
       return imageObj.path
     }
-    return require(`../assets/images/teams/mapleleafs.png`)
+    return require(`../assets/images/teams/avalanche.png`)
   }
 
   useLayoutEffect(() => {
@@ -128,9 +126,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderColor: Colors.darkGray,
-
   },
-
   spaceMarginItem: {
     margin: 7,
   }

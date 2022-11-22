@@ -14,8 +14,6 @@ const PlayersScreen = ({route, navigation}) => {
     navigation.navigate('PlayerStats', { playerId: playerId });
   }
 
-
-
   useLayoutEffect(() => {
     navigation.setOptions({title: navTitle})
   },[navigation, navTitle])

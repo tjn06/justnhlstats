@@ -1,107 +1,89 @@
-import {View, ScrollView, Pressable, Image, Dimensions,Text, StyleSheet } from 'react-native'
+import { View, ScrollView, Pressable, Image, Text, StyleSheet } from 'react-native'
 import { useState, useEffect, useContext } from 'react'
 import Colors from '../utilities/constants/colors';
 import { ApplicationContext } from '../store/context/application-context';
-
-import { useScreenOrientation } from '@use-expo/screen-orientation';
-
 import ScreenTemplate from './ScreenTemplate'
 import Header from '../components/ui/Header'
-
-import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
-import WesternIcon from '../assets/images/nhl-western-conference.svg';
-
+// import EasternIcon from '../assets/images/nhl-eastern-conference.svg';
+// import WesternIcon from '../assets/images/nhl-western-conference.svg';
 import { getConferences, getAllTeams } from '../utilities/http';
+import { useCustomScreenOrientation } from '../hooks/useCustomOrientation';
+import { useWindowDimensions } from 'react-native';
 
-
-const {screenWidth, screenHeight} = Dimensions.get('window');
-
-const StartScreen = ({route, navigation}) => {
+const StartScreen = ({ route, navigation }) => {
   const context = useContext(ApplicationContext);
-  const [orientation] = useScreenOrientation();
   const [conferences, setConferences] = useState(null)
+  const [orientation, orientationEnum] = useCustomScreenOrientation()
+  const { height: screenHeight, width: screenWidth } = useWindowDimensions();
 
   const handleConferenceClick = (teams, selectedConference) => {
-    navigation.navigate(teams , {conference: selectedConference})
+    navigation.navigate(teams, { conference: selectedConference })
   }
 
   useEffect(() => {
     (async () => {
       const conferencesResponse = await getConferences()
-      console.log("conferencesResponse", conferencesResponse)
+      // console.log("conferencesResponse", conferencesResponse)
       setConferences(conferencesResponse)
-
-
       const teamsResponse = await getAllTeams()
-      console.log("teamsResponse", teamsResponse)
+      // console.log("teamsResponse", teamsResponse)
       context.addT(teamsResponse);
     })();
-  },[])
+  }, [])
 
   return (
     <ScreenTemplate>
       <View style={styles.screen}>
-      <Text>c{orientation?.orientation}</Text>
-          <Header/>
-          <View style={styles.mainContent}>
-            <Pressable onPress={() => handleConferenceClick('Teams', conferences[1].name )}>
-              <Image
-                source={require('../assets/images/eastern.png')}
-                style={styles.imageContainerWest}
-              />
-{/*               <EasternIcon
-                  style={styles.imageContainerEast}
-                  width={200}
-                  height={200}
-              /> */}
-            </Pressable>
-
-            <Pressable onPress={() => handleConferenceClick('Teams', conferences[1].name)}>
-              <Image
-                  source={require('../assets/images/western.png')}
-                  style={styles.imageContainerWest}
+        <Header />
+        <View style={[
+          styles.mainContent,
+          {
+            flexDirection: orientation === "portrait" ? 'column' : 'row',
+            justifyContent: orientation === "portrait" ? 'center' : 'center',
+          }
+        ]}>
+          {conferences && conferences.map((conference) => {
+            return (
+              <Pressable key={conference.name} onPress={() => handleConferenceClick('Teams', conference.name)}>
+                <Image
+                  source={
+                    conference.name === "Eastern" ?
+                    require('../assets/images/Eastern.png') :
+                    require('../assets/images/Western.png')
+                  }
+                  style={[
+                    styles.imageContainerWest,
+                    {
+                      marginVertical: orientation === "portrait" ? screenWidth * 0.05 : 0,
+                      marginHorizontal: orientation === "portrait" ? 0 : screenWidth * 0.05,
+                    }
+                  ]}
                 />
-{/*               <WesternIcon
-                style={styles.imageContainerWest}
-                width={200}
-                height={200}
-              /> */}
-            </Pressable>
-          </View>
+              </Pressable>
+            )
+          })}
+        </View>
       </View>
     </ScreenTemplate>
   )
 }
 
 export default StartScreen
-
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
   mainContent: {
     flex: 1,
-    flexDirection: screenWidth > 500 ? 'column' : 'row' ,
-    justifyContent: 'center',
-    marginTop: screenWidth < 400 ? '15%' : 0,
     alignItems: 'center',
-    /* backgroundColor: 'green' */
   },
   titleText: {
     color: Colors.secondaryText,
     fontSize: 35,
     fontWeight: 'bold',
   },
-  imageContainerEast: {
-    borderWidth: 4,
-    borderColor: Colors.eastRed,
-    marginVertical: 10,
-  },
   imageContainerWest: {
     width: 190,
     height: 140,
-/*     borderWidth: 4,
-    borderColor: Colors.westBlue, */
-    marginVertical: 30,
   },
 })
